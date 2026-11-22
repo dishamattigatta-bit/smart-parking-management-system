@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Smart Parking System</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        h1 { text-align: center; color: #1a73e8; }
+        .cards { display: flex; gap: 15px; justify-content: center; margin: 20px 0; }
+        .card { background: white; padding: 20px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px #ccc; }
+        .card b { font-size: 28px; color: #1a73e8; }
+        .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px #ccc; }
+        input, select { padding: 10px; margin: 5px; width: 200px; border: 1px solid #ddd; border-radius: 8px; }
+        button { padding: 10px 20px; border: none; border-radius: 8px; color: white; cursor: pointer; }
+        .park-btn { background: #34a853; } .exit-btn { background: #ea4335; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        .msg { background: #e8f0fe; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🅿️ Smart Parking Management System</h1>
+
+    <div th:if="${message}" class="msg" th:text="${message}"></div>
+
+    <div class="cards">
+        <div class="card">Total Slots<br><b th:text="${total}">20</b></div>
+        <div class="card">Available<br><b style="color:green" th:text="${available}">20</b></div>
+        <div class="card">Total Collection<br><b style="color:#f9ab00">Rs <span th:text="${collection}">0</span></b></div>
+    </div>
+
+    <div class="box">
+        <h3>🚗 Park Vehicle</h3>
+        <form action="/park" method="post">
+            <input type="text" name="vehicleNumber" placeholder="Vehicle Number - KA01AB1234" required>
+            <select name="vehicleType">
+                <option value="CAR">CAR - Rs 50/hr</option>
+                <option value="BIKE">BIKE - Rs 20/hr</option>
+            </select>
+            <button class="park-btn" type="submit">PARK</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <h3>🚪 Exit Vehicle</h3>
+        <form action="/exit" method="post">
+            <input type="text" name="vehicleNumber" placeholder="Vehicle Number" required>
+            <button class="exit-btn" type="submit">EXIT & PAY</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <h3>📋 Currently Parked Vehicles</h3>
+        <table>
+            <tr><th>Slot</th><th>Vehicle No</th><th>Type</th><th>Entry Time</th></tr>
+            <tr th:each="p : ${parked}">
+                <td><b th:text="${p.slotNumber}"></b></td>
+                <td th:text="${p.vehicleNumber}"></td>
+                <td th:text="${p.vehicleType}"></td>
+                <td th:text="${p.entryTime}"></td>
+            </tr>
+        </table>
+        <p th:if="${#lists.isEmpty(parked)}">No vehicles parked right now.</p>
+    </div>
+
+    <div class="box">
+        <h3>🧾 All History</h3>
+        <table>
+            <tr><th>Vehicle</th><th>Slot</th><th>Status</th><th>Fee</th></tr>
+            <tr th:each="r : ${allRecords}">
+                <td th:text="${r.vehicleNumber}"></td>
+                <td th:text="${r.slotNumber}"></td>
+                <td th:text="${r.status}"></td>
+                <td>Rs <span th:text="${r.fee}"></span></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
